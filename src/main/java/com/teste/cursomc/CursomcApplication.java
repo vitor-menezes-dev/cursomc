@@ -39,7 +39,7 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		p1.getCategorias().add(cat1);
 		p2.getCategorias().addAll(Arrays.asList(cat1,cat2));
-		p3.getCategorias().add(cat2);
+		p3.getCategorias().add(cat1);
 		
 		categoriaRepository.saveAll(Arrays.asList(cat1,cat2));
 		produtoRepository.saveAll(Arrays.asList(p1,p2,p3));
