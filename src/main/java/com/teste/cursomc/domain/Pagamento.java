@@ -20,13 +20,13 @@ public abstract class Pagamento implements Serializable {
 	@Id
 	private Integer id;
 	private Integer estado;
-	
+
 	@JsonIgnore
 	@JoinColumn(name = "pedido_id")
 	@OneToOne
 	@MapsId
 	private Pedido pedido;
-	
+
 	public Pagamento() {
 	}
 
@@ -90,7 +90,5 @@ public abstract class Pagamento implements Serializable {
 	public String toString() {
 		return "Pagamento [id=" + id + ", estado=" + estado + ", pedido=" + pedido + "]";
 	}
-	
-	
-	
+
 }
