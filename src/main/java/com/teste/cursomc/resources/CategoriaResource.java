@@ -19,12 +19,7 @@ public class CategoriaResource {
 	
 	@RequestMapping(value="/{id}",method = RequestMethod.GET)
 	public ResponseEntity<?> find(@PathVariable Integer id) {
-//		Categoria cat1 = new Categoria(1, "Informática");
-//		Categoria cat2 = new Categoria(2, "Escritório");
-//		
-//		List<Categoria> lista = new ArrayList<>();
-//		lista.add(cat1);
-//		lista.add(cat2);
+
 		Categoria cat = service.buscar(id);
 		return ResponseEntity.ok(cat);
 	}
