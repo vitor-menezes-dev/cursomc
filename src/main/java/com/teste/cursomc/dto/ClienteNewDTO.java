@@ -2,28 +2,47 @@ package com.teste.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.teste.cursomc.services.validation.ClienteInsert;
+
+@ClienteInsert
 public class ClienteNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-
+	@NotEmpty(message = "Preenchimento Obrigatório")
+	@Length(min = 5, max = 120, message = "O Tamanho deve ser entre 5 e 120 caracteres")
 	private String nome;
+
+	@NotEmpty(message = "Preenchimento Obrigatório")
+	@Email(message = "Email inválido")
 	private String email;
-	private String cpfOuCnpj;
-	private Integer tipoCliente;
 	
+	@NotEmpty(message = "Preenchimento Obrigatório")
+	
+	private String cpfOuCnpj;
+	
+	private Integer tipo;
+
+	@NotEmpty(message = "Preenchimento Obrigatório")
 	private String logradouro;
+	@NotEmpty(message = "Preenchimento Obrigatório")
 	private String numero;
 	private String complemento;
 	private String bairro;
+	@NotEmpty(message = "Preenchimento Obrigatório")
 	private String cep;
-	
-	
+
+	@NotEmpty(message = "Preenchimento Obrigatório")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;
-	
+
 	private Integer cidadeId;
-	
+
 	public ClienteNewDTO() {
 	}
 
@@ -51,12 +70,12 @@ public class ClienteNewDTO implements Serializable {
 		this.cpfOuCnpj = cpfOuCnpj;
 	}
 
-	public Integer getTipoCliente() {
-		return tipoCliente;
+	public Integer getTipo() {
+		return tipo;
 	}
 
-	public void setTipoCliente(Integer tipoCliente) {
-		this.tipoCliente = tipoCliente;
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getLogradouro() {
@@ -130,6 +149,5 @@ public class ClienteNewDTO implements Serializable {
 	public void setCidadeId(Integer cidadeId) {
 		this.cidadeId = cidadeId;
 	}
-	
-	
+
 }
