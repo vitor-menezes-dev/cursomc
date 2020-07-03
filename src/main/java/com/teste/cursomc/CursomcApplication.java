@@ -154,8 +154,8 @@ public class CursomcApplication implements CommandLineRunner {
 		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.0, 2, 80.0);
 		ItemPedido ip3 = new ItemPedido(ped2, p2, 0.0, 2, 800.0);
 
-		ped1.getItems().addAll(Arrays.asList(ip1, ip2));
-		ped2.getItems().add(ip3);
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().add(ip3);
 
 		p1.getItems().add(ip1);
 		p2.getItems().add(ip3);
