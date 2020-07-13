@@ -43,7 +43,7 @@ public class ClienteService {
 	private BCryptPasswordEncoder pe;
 	
 	public Cliente find(Integer id) {
-		UserSS user = UserService.autenticated();
+		UserSS user = UserService.authenticated();
 		if(user==null || (!user.hasRole(Perfil.ADMIN) && !id.equals(user.getId()))) {
 			throw new AuthorizationException("Acesso negado");
 		}

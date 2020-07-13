@@ -16,7 +16,6 @@ import com.teste.cursomc.domain.PagamentoComBoleto;
 import com.teste.cursomc.domain.Pedido;
 import com.teste.cursomc.domain.Produto;
 import com.teste.cursomc.domain.enums.EstadoPagamento;
-import com.teste.cursomc.domain.enums.Perfil;
 import com.teste.cursomc.repositories.ItemPedidoRepository;
 import com.teste.cursomc.repositories.PagamentoRepository;
 import com.teste.cursomc.repositories.PedidoRepository;
@@ -85,7 +84,7 @@ public class PedidoService {
 	}
 
 	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		UserSS user = UserService.autenticated();
+		UserSS user = UserService.authenticated();
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
