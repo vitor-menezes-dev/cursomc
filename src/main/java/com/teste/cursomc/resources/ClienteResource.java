@@ -30,6 +30,7 @@ public class ClienteResource {
 	@Autowired
 	private ClienteService service;
 	
+	
 	@RequestMapping(value="/{id}",method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Integer id) {
 		Cliente cat = service.find(id);
