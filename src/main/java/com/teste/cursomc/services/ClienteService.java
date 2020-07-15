@@ -52,8 +52,18 @@ public class ClienteService {
 	@Autowired
 	private ImageService imageService;
 
+	
+	@Value("${img.folder.client.profile}")
+	private String folder;
+	
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
+	
+	@Value("${img.size.client.profile}")
+	private int profileSize;
+	
+	@Value("${img.thumb.size.client.profile}")
+	private int profileThumbSize;
 	
 	public Cliente find(Integer id) {
 		UserSS user = UserService.authenticated();
@@ -132,9 +142,17 @@ public class ClienteService {
 		}
 		
 		BufferedImage jpegImage = imageService.getJpgImageFromFile(multipartFile);
+		jpegImage = imageService.cropSquare(jpegImage);
+		
+		BufferedImage thumbJpegImage = imageService.resize(jpegImage, profileThumbSize);
+		
+		jpegImage = imageService.resize(jpegImage, profileSize);
+		
 		String fileName = prefix+user.getId()+".jpg";
 		
-		return s3Service.uploadFile(imageService.getInputStream(jpegImage, "jpg"), fileName, "image");
+		s3Service.uploadFile(imageService.getInputStream(thumbJpegImage, "jpg"), folder+"/thumb/"+fileName, "image");
+		
+		return s3Service.uploadFile(imageService.getInputStream(jpegImage, "jpg"), folder+"/"+fileName, "image");
 		
 	}
 
