@@ -107,6 +107,19 @@ public class ClienteService {
 	public List<Cliente> findAll() {
 		return repo.findAll();
 	}
+	
+	public Cliente findByEmail(String email) {
+		UserSS user = UserService.authenticated();
+		if (user == null || (!user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername()))) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		Cliente obj = repo.findByEmail(email);
+		if(obj==null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getSimpleName());
+		}
+		return obj;
+	}
 
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
@@ -144,15 +157,15 @@ public class ClienteService {
 		BufferedImage jpegImage = imageService.getJpgImageFromFile(multipartFile);
 		jpegImage = imageService.cropSquare(jpegImage);
 		
-		BufferedImage thumbJpegImage = imageService.resize(jpegImage, profileThumbSize);
+//		BufferedImage thumbJpegImage = imageService.resize(jpegImage, profileThumbSize);
 		
 		jpegImage = imageService.resize(jpegImage, profileSize);
 		
 		String fileName = prefix+user.getId()+".jpg";
 		
-		s3Service.uploadFile(imageService.getInputStream(thumbJpegImage, "jpg"), folder+"/thumb/"+fileName, "image");
+		//s3Service.uploadFile(imageService.getInputStream(thumbJpegImage, "jpg"), folder+"/thumb/"+fileName, "image");
 		
-		return s3Service.uploadFile(imageService.getInputStream(jpegImage, "jpg"), folder+"/"+fileName, "image");
+		return s3Service.uploadFile(imageService.getInputStream(jpegImage, "jpg"), fileName, "image");
 		
 	}
 
