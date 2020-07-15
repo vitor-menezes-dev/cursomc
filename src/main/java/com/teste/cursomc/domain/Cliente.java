@@ -61,9 +61,6 @@ public class Cliente implements Serializable {
 		addPerfis(Perfil.CLIENTE);
 	}
 
-	
-	private String imageUrl;
-	
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipoCliente, String senha) {
 		super();
 		this.id = id;
@@ -184,14 +181,6 @@ public class Cliente implements Serializable {
 	public String toString() {
 		return "Cliente [id=" + id + ", nome=" + nome + ", email=" + email + ", cpfOuCnpj=" + cpfOuCnpj
 				+ ", tipoCliente=" + tipoCliente + "]";
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 }

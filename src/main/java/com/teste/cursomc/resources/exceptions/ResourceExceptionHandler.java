@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -98,5 +99,16 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 
 	}
+
+	
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<StandardError> MaxUploadSizeExceeded(MaxUploadSizeExceededException e, HttpServletRequest request) {
+
+		StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+
+	}
+	
 
 }
