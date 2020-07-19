@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +20,12 @@ public class Estado implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@Column(unique = true)
 	private String nome;
+	
+	@Column(unique = true)
+	private String sigla;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "estado")
@@ -28,10 +34,11 @@ public class Estado implements Serializable {
 	public Estado() {
 	}
 
-	public Estado(Integer id, String nome) {
+	public Estado(Integer id, String nome,  String sigla) {
 		super();
 		this.setId(id);
 		this.setNome(nome);
+		this.setSigla(sigla);
 	}
 
 	public Integer getId() {
@@ -48,6 +55,14 @@ public class Estado implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getSigla() {
+		return sigla;
+	}
+
+	public void setSigla(String sigla) {
+		this.sigla = sigla;
 	}
 
 	public List<Cidade> getCidades() {
@@ -85,7 +100,17 @@ public class Estado implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Estado [id=" + id + ", nome=" + nome + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Estado [id=");
+		builder.append(id);
+		builder.append(", nome=");
+		builder.append(nome);
+		builder.append(", sigla=");
+		builder.append(sigla);
+		builder.append("]");
+		return builder.toString();
 	}
+
+
 
 }

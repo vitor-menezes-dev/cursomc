@@ -20,6 +20,6 @@ public class EstadoService {
 	}
 
 	public Estado fromDTO(EstadoDTO objDto) {
-		return new Estado(objDto.getId(),objDto.getNome());
+		return new Estado(objDto.getId(),objDto.getNome(), objDto.getSigla());
 	}
 }
