@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.teste.cursomc.domain.Categoria;
 import com.teste.cursomc.domain.Cidade;
@@ -63,13 +64,12 @@ public class DBService {
 
 	@Autowired
 	ItemPedidoRepository itemPedidoRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder pe;
-	
+
 	public void instantieteTestDatabase() throws ParseException {
-		
-		
+
 		Categoria cat1 = new Categoria(null, "Informática");
 		Categoria cat2 = new Categoria(null, "Escritório");
 		Categoria cat3 = new Categoria(null, "Cama, mesa e banho");
@@ -78,8 +78,7 @@ public class DBService {
 		Categoria cat6 = new Categoria(null, "Decoração");
 		Categoria cat7 = new Categoria(null, "Perfumaria");
 		Categoria cat8 = new Categoria(null, "Teste");
-	
-		
+
 		Produto p1 = new Produto(null, "Computador", 2000.00);
 		Produto p2 = new Produto(null, "Impressora", 800.00);
 		Produto p3 = new Produto(null, "Mouse", 80.00);
@@ -94,8 +93,7 @@ public class DBService {
 
 		List<Produto> listaProdutos = new ArrayList<>();
 		listaProdutos.addAll(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11));
-		
-		
+
 		cat1.getProdutos().addAll(Arrays.asList(p1, p2, p3));
 		cat2.getProdutos().addAll(Arrays.asList(p2, p4));
 		cat3.getProdutos().addAll(Arrays.asList(p5, p6));
@@ -105,7 +103,7 @@ public class DBService {
 		cat7.getProdutos().addAll(Arrays.asList(p11));
 
 		p1.getCategorias().addAll(Arrays.asList(cat1, cat4));
-		p2.getCategorias().addAll(Arrays.asList(cat1, cat2,cat4));
+		p2.getCategorias().addAll(Arrays.asList(cat1, cat2, cat4));
 		p3.getCategorias().addAll(Arrays.asList(cat1, cat4));
 		p4.getCategorias().addAll(Arrays.asList(cat2));
 		p5.getCategorias().addAll(Arrays.asList(cat3));
@@ -115,53 +113,59 @@ public class DBService {
 		p9.getCategorias().addAll(Arrays.asList(cat6));
 		p10.getCategorias().addAll(Arrays.asList(cat6));
 		p11.getCategorias().addAll(Arrays.asList(cat7));
-		
+
 		for (int i = 0; i < 100; i++) {
-			Produto p = new Produto(null, "Produto "+i, 10.00);
+			Produto p = new Produto(null, "Produto " + i, 10.00);
 			p.getCategorias().add(cat1);
 			cat1.getProdutos().add(p);
 			listaProdutos.add(p);
 		}
 
-		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7,cat8));
+		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8));
 		produtoRepository.saveAll(listaProdutos);
 
-		Estado est1 = new Estado(null, "Minas Gerais","MG");
-		Estado est2 = new Estado(null, "São Paulo","SP");
 
-		Cidade c1 = new Cidade(null, "Uberlandia", est1);
-		Cidade c2 = new Cidade(null, "São Paulo", est2);
-		Cidade c3 = new Cidade(null, "Campinas", est2);
+		Estado[] estados = getEstados();
+		estadoRepository.saveAll(Arrays.asList(estados));
+		for (Estado estado :  getEstados()) {
+			Cidade[] cidades = getCidades(estado);
+			for (Cidade cidade : cidades) {
+				cidade.setEstado(estado);
+			}
+			estado.getCidades().addAll(Arrays.asList(cidades));
+			cidadeRepository.saveAll(Arrays.asList(cidades));
+		}
 
-		est1.getCidades().add(c1);
-		est2.getCidades().addAll(Arrays.asList(c3, c2));
+		estadoRepository.saveAll(Arrays.asList(estados));
 
-		estadoRepository.saveAll(Arrays.asList(est1, est2));
-		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
-		Cliente cli1 = new Cliente(null, "Maria Silva", "vitor.tonhao2@gmail.com", "36378912377", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		Cidade c1 = cidadeRepository.findById(3170206).get();//"Uberlandia"
+		Cidade c2 = cidadeRepository.findById(3550308).get();//"São Paulo"
+		Cidade c3 = cidadeRepository.findById(3509502).get();//"Campinas" 
+		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "vitor.tonhao2@gmail.com", "36378912377",
+				TipoCliente.PESSOAFISICA, pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 
-		Cliente cli2 = new Cliente(null, "Vitor Sousa", "vitor.tonhao@gmail.com", "05077231044", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		Cliente cli2 = new Cliente(null, "Vitor Sousa", "vitor.tonhao@gmail.com", "05077231044",
+				TipoCliente.PESSOAFISICA, pe.encode("123"));
 		cli2.addPerfis(Perfil.ADMIN);
 		cli2.getTelefones().addAll(Arrays.asList("27363321", "93838391"));
-		
+
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, c1);
 
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
 
-		
 		Endereco e3 = new Endereco(null, "Rua Flores", "310", "Apto 302", "Jardim", "38220834", cli2, c1);
 
-		Endereco e4 = new Endereco(null, "Avenida Matos", "115", "Sala 801", "Centro", "38777012", cli2, c2);
+		Endereco e4 = new Endereco(null, "Avenida Matos", "115", "Sala 801", "Centro", "38777012", cli2, c3);
 
-		
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
-		
+
 		cli2.getEnderecos().addAll(Arrays.asList(e3, e4));
 
 		clienteRepository.save(cli1);
-		
+
 		clienteRepository.save(cli2);
 
 		enderecoRepository.saveAll(Arrays.asList(e1, e2, e3, e4));
@@ -192,6 +196,24 @@ public class DBService {
 		p3.getItems().add(ip1);
 
 		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
+		 
+		
+	}
+
+	private Estado[] getEstados() {
+		final String uri = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/";
+
+		RestTemplate restTemplate = new RestTemplate();
+		Estado[] result = restTemplate.getForObject(uri, Estado[].class);
+		return result;
 	}
 	
+	private Cidade[] getCidades(Estado estado) {
+		final String uri = "https://servicodados.ibge.gov.br/api/v1/localidades/estados/"+estado.getId()+"/municipios";
+		RestTemplate restTemplate = new RestTemplate();
+		Cidade[] result = restTemplate.getForObject(uri, Cidade[].class);
+		
+		return result;
+	}
+
 }
